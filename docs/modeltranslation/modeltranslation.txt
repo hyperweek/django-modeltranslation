@@ -447,9 +447,7 @@ Just like `TranslationAdmin` these classes implement a special method
 patching.
 
 For our example we assume that there is new model called Image. It's
-definition is left out for simplicity. Our News model inlines the new model:
-
-::
+definition is left out for simplicity. Our News model inlines the new model::
 
     from django.contrib import admin
     from modeltranslation.admin import TranslationTabularInline
@@ -471,11 +469,7 @@ definition is left out for simplicity. Our News model inlines the new model:
 In this more complex example we assume that the News and Image models are
 registered in translation.py. The News model has an own custom admin class and
 the Image model an own generic stacked inline class. It uses the technique
-described in `TranslationAdmin in combination with other admin classes`__.:
-
-__ translationadmin_in_combination_with_other_admin_classes_
-
-::
+described in [InstallationAndUsage#TranslationAdmin_in_combination_with_other_admin_classes TranslationAdmin in combination with other admin classes].::
 
     from django.contrib import admin
     from modeltranslation.admin import TranslationAdmin, TranslationGenericStackedInline
