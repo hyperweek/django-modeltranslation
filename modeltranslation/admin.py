@@ -104,6 +104,8 @@ class TranslationAdmin(admin.ModelAdmin, TranslationAdminBase):
                     and f.name not in trans_opts.localized_fieldnames_rev
                     # Avoid including the primary key field:
                     and f is not self.opts.auto_field
+                    # Avoid non-editable fields
+                    and f.editable
                 )
             ]
 
