@@ -77,6 +77,9 @@ class TranslationAdmin(admin.ModelAdmin, TranslationAdminBase):
                     fields_new[index:index + 1] = translation_fields
             self.fields = fields_new
 
+        # Simple policy: if the admin class already defines a fieldset, we
+        # leave it alone and assume the author has done whatever grouping for
+        # translated fields they desire:
         if self.fieldsets:
             fieldsets_new = list(self.fieldsets)
             for (name, dct) in self.fieldsets:
@@ -89,6 +92,36 @@ class TranslationAdmin(admin.ModelAdmin, TranslationAdminBase):
                             fields_new[index:index + 1] = translation_fields
                     dct['fields'] = fields_new
             self.fieldsets = fieldsets_new
+        else:
+            # If there aren't any existing fieldsets, we'll automatically
+            # create one to group each translated field's localized fields:
+
+            non_translated_fields = [
+                f.name for f in self.opts.fields if (
+                    # The original translation field:
+                    f.name not in trans_opts.fields
+                    # The auto-generated fields for translations:
+                    and f.name not in trans_opts.localized_fieldnames_rev
+                    # Avoid including the primary key field:
+                    and f is not self.opts.auto_field
+                    # Avoid non-editable fields
+                    and f.editable
+                )
+            ]
+
+            self.fieldsets = [
+                ('', {'fields': non_translated_fields}),
+            ]
+
+            for orig_field, trans_fields in trans_opts.localized_fieldnames.items():
+                # Extract the original field's verbose_name for use as this
+                # fieldset's label - using ugettext_lazy in your model
+                # declaration can make that translatable:
+                label = self.model._meta.get_field(orig_field).verbose_name
+                self.fieldsets.append((label, {
+                    "fields": trans_fields,
+                    "classes": ("modeltranslations",)
+                }))
 
         if self.list_editable:
             editable_new = list(self.list_editable)

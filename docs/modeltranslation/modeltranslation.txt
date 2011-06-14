@@ -440,9 +440,7 @@ Just like `TranslationAdmin` these classes implement a special method
 patching.
 
 For our example we assume that there is new model called Image. It's
-definition is left out for simplicity. Our News model inlines the new model:
-
-::
+definition is left out for simplicity. Our News model inlines the new model::
 
     from django.contrib import admin
     from modeltranslation.admin import TranslationTabularInline
@@ -464,11 +462,7 @@ definition is left out for simplicity. Our News model inlines the new model:
 In this more complex example we assume that the News and Image models are
 registered in translation.py. The News model has an own custom admin class and
 the Image model an own generic stacked inline class. It uses the technique
-described in `TranslationAdmin in combination with other admin classes`__.:
-
-__ translationadmin_in_combination_with_other_admin_classes_
-
-::
+described in [InstallationAndUsage#TranslationAdmin_in_combination_with_other_admin_classes TranslationAdmin in combination with other admin classes].::
 
     from django.contrib import admin
     from modeltranslation.admin import TranslationAdmin, TranslationGenericStackedInline
@@ -514,6 +508,19 @@ might have to be adopted to your setup of serving static files. Standard
 jquery-ui theming can be used to customize the look of tabs, the provided css
 file is supposed to work well with a default Django admin.
 
+Grouping Translated Fields into Fieldsets
+-----------------------------------------
+
+If your ``TranslationOptions`` sets ``group_fields = True`` modeltranslation will automatically create
+`fieldsets <http://docs.djangoproject.com/en/1.2/ref/contrib/admin/#django.contrib.admin.ModelAdmin.fieldsets>`_
+for the translated fields so the translated will be grouped together on the
+change form.
+
+*Note:* modeltranslation will not replace existing fieldsets. If you want more
+control over the grouping or wish to use some of the other options described
+in the `ModelAdmin documentation <http://docs.djangoproject.com/en/1.2/ref/contrib/admin/#django.contrib.admin.ModelAdmin.fieldsets>`_
+simply add the original field names for your translation fields to a fieldset
+and modeltranslation will place the translated fields in the same location.
 
 The ``update_translation_fields`` command
 =========================================
