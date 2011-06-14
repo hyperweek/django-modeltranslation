@@ -746,7 +746,6 @@ class TestModelMultitableB(TestModelMultitableA):
 class TestModelMultitableC(TestModelMultitableB):
     titlec = models.CharField(ugettext_lazy('title c'), max_length=255)
 
-
 class TestModelMultitableD(TestModelMultitableB):
     titled = models.CharField(ugettext_lazy('title d'), max_length=255)
 
