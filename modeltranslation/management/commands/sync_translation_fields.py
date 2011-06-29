@@ -46,11 +46,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """ command execution """
-        # set manual transaction management
-        transaction.commit_unless_managed()
-        transaction.enter_transaction_management()
-        transaction.managed(True)
-
         self.cursor = connection.cursor()
         self.introspection = connection.introspection
 
@@ -76,15 +71,13 @@ class Command(BaseCommand):
                             print 'Executing SQL...',
                             for sentence in sql_sentences:
                                 self.cursor.execute(sentence)
-                                # commit
-                                transaction.commit()
                             print 'Done'
                         else:
                             print 'SQL not executed'
             except NotRegistered:
                 pass
 
-        transaction.leave_transaction_management()
+        transaction.commit_unless_managed()
 
         if not found_missing_fields:
             print '\nNo new translatable fields detected'
