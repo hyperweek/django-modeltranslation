@@ -1,18 +1,12 @@
 # -*- coding: utf-8 -*-
 from copy import copy
 
-from django import forms, template
-from django.conf import settings
 from django.contrib import admin
 from django.contrib.contenttypes import generic
 
 from modeltranslation.settings import *
 from modeltranslation.translator import translator
 from modeltranslation.utils import get_translation_fields, build_localized_fieldname
-# Ensure that models are registered for translation before TranslationAdmin
-# runs. The import is supposed to resolve a race condition between model import
-# and translation registration in production (see issue 19).
-import modeltranslation.models
 
 
 class TranslationAdminBase(object):
