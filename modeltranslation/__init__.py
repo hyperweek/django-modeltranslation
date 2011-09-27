@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import inspect
-from django.conf import settings
 
 
 # Every model registered with the modeltranslation.translator.translator is
@@ -14,7 +13,7 @@ def autodiscover(*args, **kwargs):
     """
     import sys
     import copy
-    from django.conf import settings  # don't remove this
+    from django.conf import settings
     from django.utils.importlib import import_module
     from django.utils.module_loading import module_has_submodule
     from modeltranslation.translator import translator
@@ -51,7 +50,7 @@ def autodiscover(*args, **kwargs):
             pass
 
 
-def handle_registrations(*args, **kwargs):
+def handle_translation_registrations(*args, **kwargs):
     """
     Ensures that any configuration of the TranslationOption(s) are handled when
     importing modeltranslation.
@@ -59,6 +58,7 @@ def handle_registrations(*args, **kwargs):
     This makes it possible for scripts/management commands that affect models
     but know nothing of Haystack to keep the index up to date.
     """
+    from django.conf import settings
     if not getattr(settings, 'MODELTRANSLATION_ENABLE_REGISTRATIONS', True):
         # If the user really wants to disable this, they can, possibly at their
         # own expense. This is generally only required in cases where other
@@ -73,12 +73,12 @@ def handle_registrations(*args, **kwargs):
     stack = inspect.stack()
 
     for stack_info in stack[1:]:
-        if 'handle_registrations' in stack_info[3]:
+        if 'handle_translation_registrations' in stack_info[3]\
+            and __file__ == stack_info[2]:
             return
 
     # Trigger autodiscover, causing any TranslationOption initialization
     # code to execute.
     autodiscover()
 
-
-handle_registrations()
+handle_translation_registrations()
