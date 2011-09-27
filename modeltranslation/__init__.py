@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import inspect
+from django.conf import settings
 
 
 # Every model registered with the modeltranslation.translator.translator is
@@ -12,7 +14,7 @@ def autodiscover(*args, **kwargs):
     """
     import sys
     import copy
-    from django.conf import settings
+    from django.conf import settings  # don't remove this
     from django.utils.importlib import import_module
     from django.utils.module_loading import module_has_submodule
     from modeltranslation.translator import translator
@@ -47,3 +49,36 @@ def autodiscover(*args, **kwargs):
                                                 translated_model_names))
         except IndexError:
             pass
+
+
+def handle_registrations(*args, **kwargs):
+    """
+    Ensures that any configuration of the TranslationOption(s) are handled when
+    importing modeltranslation.
+
+    This makes it possible for scripts/management commands that affect models
+    but know nothing of Haystack to keep the index up to date.
+    """
+    if not getattr(settings, 'MODELTRANSLATION_ENABLE_REGISTRATIONS', True):
+        # If the user really wants to disable this, they can, possibly at their
+        # own expense. This is generally only required in cases where other
+        # apps generate import errors and requires extra work on the user's
+        # part to make things work.
+        return
+
+    # This is a little dirty but we need to run the code that follows only
+    # once, no matter how many times the main Haystack module is imported.
+    # We'll look through the stack to see if we appear anywhere and simply
+    # return if we do, allowing the original call to finish.
+    stack = inspect.stack()
+
+    for stack_info in stack[1:]:
+        if 'handle_registrations' in stack_info[3]:
+            return
+
+    # Trigger autodiscover, causing any TranslationOption initialization
+    # code to execute.
+    autodiscover()
+
+
+handle_registrations()

@@ -14,9 +14,6 @@ class Command(NoArgsCommand):
            'translated application using the value of the original field.'
 
     def handle(self, **options):
-        import modeltranslation
-        modeltranslation.autodiscover()
-
         print "Using default language:", DEFAULT_LANGUAGE
 
         for model, trans_opts in translator._registry.items():

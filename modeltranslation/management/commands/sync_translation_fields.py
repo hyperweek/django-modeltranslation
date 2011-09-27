@@ -45,9 +45,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """ command execution """
-        import modeltranslation
-        modeltranslation.autodiscover()
-
         self.cursor = connection.cursor()
         self.introspection = connection.introspection
 
