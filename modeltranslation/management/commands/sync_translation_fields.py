@@ -8,6 +8,7 @@
 
 Credits: heavily inspired from django-transmete sync_transmeta_db command.
 """
+from optparse import make_option
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -41,12 +42,19 @@ def print_missing_langs(missing_langs, field_name, model_name):
 
 
 class Command(BaseCommand):
+    option_list = BaseCommand.option_list + (
+        make_option('--noinput',
+            action='store_false', dest='interactive', default=True,
+            help="Do NOT prompt the user for input of any kind."),
+    )
     help = "Detect new translatable fields or new available languages and sync database structure"
 
     def handle(self, *args, **options):
         """ command execution """
         self.cursor = connection.cursor()
         self.introspection = connection.introspection
+
+        self.interactive = options['interactive']
 
         found_missing_fields = False
         registered_models = translator._registry.keys()
@@ -61,10 +69,12 @@ class Command(BaseCommand):
             for field_name in translatable_fields:
                 missing_langs = list(self.get_missing_languages(field_name, db_table))
                 if missing_langs:
+                    execute_sql = True
                     found_missing_fields = True
                     print_missing_langs(missing_langs, field_name, model_full_name)
                     sql_sentences = self.get_sync_sql(field_name, missing_langs, model)
-                    execute_sql = ask_for_confirmation(sql_sentences, model_full_name)
+                    if self.interactive:
+                        execute_sql = ask_for_confirmation(sql_sentences, model_full_name)
                     if execute_sql:
                         print 'Executing SQL...',
                         for sentence in sql_sentences:
