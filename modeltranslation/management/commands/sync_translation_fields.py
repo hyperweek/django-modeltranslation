@@ -13,10 +13,9 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection, transaction
-from django.db.models import get_models
 
-from modeltranslation.translator import translator, NotRegistered
 from modeltranslation.utils import build_localized_fieldname
+from modeltranslation.translator import translator
 
 
 def ask_for_confirmation(sql_sentences, model_full_name):
@@ -46,36 +45,36 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """ command execution """
+        import modeltranslation
+        modeltranslation.autodiscover()
+
         self.cursor = connection.cursor()
         self.introspection = connection.introspection
-
-        all_models = get_models()
+        import pdb; pdb.set_trace()
         found_missing_fields = False
-        for model in all_models:
-            try:
-                options = translator.get_options_for_model(model)
-                # options returns full-wide spectrum of localized fields but
-                # we only to synchronize the local fields attached to the model.
-                local_field_names = [field.name for field in model._meta.local_fields]
-                translatable_fields = [field for field in options.localized_fieldnames if field in local_field_names]
-                model_full_name = '%s.%s' % (model._meta.app_label, model._meta.module_name)
-                db_table = model._meta.db_table
-                for field_name in translatable_fields:
-                    missing_langs = list(self.get_missing_languages(field_name, db_table))
-                    if missing_langs:
-                        found_missing_fields = True
-                        print_missing_langs(missing_langs, field_name, model_full_name)
-                        sql_sentences = self.get_sync_sql(field_name, missing_langs, model)
-                        execute_sql = ask_for_confirmation(sql_sentences, model_full_name)
-                        if execute_sql:
-                            print 'Executing SQL...',
-                            for sentence in sql_sentences:
-                                self.cursor.execute(sentence)
-                            print 'Done'
-                        else:
-                            print 'SQL not executed'
-            except NotRegistered:
-                pass
+        registered_models = translator._registry.keys()
+        for model in registered_models:
+            options = translator.get_options_for_model(model)
+            # options returns full-wide spectrum of localized fields but
+            # we only to synchronize the local fields attached to the model.
+            local_field_names = [field.name for field in model._meta.local_fields]
+            translatable_fields = [field for field in options.localized_fieldnames if field in local_field_names]
+            model_full_name = '%s.%s' % (model._meta.app_label, model._meta.module_name)
+            db_table = model._meta.db_table
+            for field_name in translatable_fields:
+                missing_langs = list(self.get_missing_languages(field_name, db_table))
+                if missing_langs:
+                    found_missing_fields = True
+                    print_missing_langs(missing_langs, field_name, model_full_name)
+                    sql_sentences = self.get_sync_sql(field_name, missing_langs, model)
+                    execute_sql = ask_for_confirmation(sql_sentences, model_full_name)
+                    if execute_sql:
+                        print 'Executing SQL...',
+                        for sentence in sql_sentences:
+                            self.cursor.execute(sentence)
+                        print 'Done'
+                    else:
+                        print 'SQL not executed'
 
         transaction.commit_unless_managed()
 
