@@ -50,7 +50,7 @@ class Command(BaseCommand):
 
         self.cursor = connection.cursor()
         self.introspection = connection.introspection
-        import pdb; pdb.set_trace()
+
         found_missing_fields = False
         registered_models = translator._registry.keys()
         for model in registered_models:
