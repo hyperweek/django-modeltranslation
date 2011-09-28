@@ -167,8 +167,12 @@ class Translator(object):
             translation_opts.localized_fieldnames_rev = rev_dict
 
             # Delete all fields cache for related model (parent and children)
-            for related_obj in model._meta.get_all_related_objects():
-                delete_cache_fields(related_obj.model)
+            related_classes = tuple(model.__bases__) \
+                + tuple(model.__subclasses__())
+            for related_model in related_classes:
+                if related_model != models.Model \
+                    and issubclass(related_model, models.Model):
+                    delete_cache_fields(related_model)
 
         model_fallback_values =\
         getattr(translation_opts, 'fallback_values', None)
