@@ -59,7 +59,7 @@ def handle_translation_registrations(*args, **kwargs):
     but know nothing of Haystack to keep the index up to date.
     """
     from django.conf import settings
-    if not getattr(settings, 'MODELTRANSLATION_ENABLE_REGISTRATIONS', True):
+    if not getattr(settings, 'MODELTRANSLATION_ENABLE_REGISTRATIONS', settings.USE_I18N):
         # If the user really wants to disable this, they can, possibly at their
         # own expense. This is generally only required in cases where other
         # apps generate import errors and requires extra work on the user's
