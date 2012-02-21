@@ -3,7 +3,7 @@
 var google, django, gettext;
 
 (function () {
-    var jQuery = django.jQuery || jQuery || $;
+    var jQuery = jQuery || $ || django.jQuery;
     jQuery(function ($) {
         function getGroupedTranslationFields() {
             /** Returns a grouped set of all text based model translation fields.
