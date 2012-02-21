@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from distutils.core import setup
+from setuptools import setup
 
 setup(name='django-modeltranslation',
       version='0.3.2',
@@ -20,6 +20,7 @@ setup(name='django-modeltranslation',
       packages=['modeltranslation', 'modeltranslation.management',
                 'modeltranslation.management.commands'],
       include_package_data = True,
+      zip_safe = False,
       requires=['django(>=1.0)'],
       download_url='http://django-modeltranslation.googlecode.com/files/django-modeltranslation-0.3.2.tar.gz',
       classifiers=['Framework :: Django',
