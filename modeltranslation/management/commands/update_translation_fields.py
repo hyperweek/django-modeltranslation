@@ -2,7 +2,7 @@
 from django.db.models import F, Q
 from django.core.management.base import NoArgsCommand
 
-from modeltranslation.settings import DEFAULT_LANGUAGE
+from modeltranslation import settings
 from modeltranslation.translator import translator
 from modeltranslation.utils import build_localized_fieldname
 
@@ -12,13 +12,13 @@ class Command(NoArgsCommand):
            'translated application using the value of the original field.'
 
     def handle(self, **options):
-        print "Using default language:", DEFAULT_LANGUAGE
+        print "Using default language:", settings.DEFAULT_LANGUAGE
 
         for model, trans_opts in translator._registry.items():
             print "Updating data of model '%s'" % model
             for fieldname in trans_opts.fields:
                 def_lang_fieldname =\
-                build_localized_fieldname(fieldname, DEFAULT_LANGUAGE)
+                build_localized_fieldname(fieldname, settings.DEFAULT_LANGUAGE)
 
                 # We'll only update fields which do not have an existing value:
                 model.objects.filter(Q(**{def_lang_fieldname: None}) |\
