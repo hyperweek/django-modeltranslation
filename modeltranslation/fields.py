@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-import sys
-from warnings import warn
-
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.fields import Field, CharField, TextField
 

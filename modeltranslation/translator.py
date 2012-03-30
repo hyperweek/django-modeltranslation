@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.db import models
-from django.db.models import signals
 from django.db.models.base import ModelBase
-from django.utils.functional import curry
 
-from modeltranslation.fields import (TranslationField,
-                                     TranslationFieldDescriptor,
+from modeltranslation.fields import (TranslationFieldDescriptor,
                                      create_translation_field)
 from modeltranslation.utils import build_localized_fieldname
 
