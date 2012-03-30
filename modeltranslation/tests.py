@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.test import TestCase
@@ -10,7 +9,6 @@ from django.utils.translation import trans_real
 from django.utils.translation import ugettext_lazy
 
 from modeltranslation import translator
-from modeltranslation.settings import *
 
 # TODO: Tests for TranslationAdmin, RelatedTranslationField and subclasses
 
@@ -746,8 +744,10 @@ class TestModelMultitableB(TestModelMultitableA):
 class TestModelMultitableC(TestModelMultitableB):
     titlec = models.CharField(ugettext_lazy('title c'), max_length=255)
 
+
 class TestModelMultitableD(TestModelMultitableB):
     titled = models.CharField(ugettext_lazy('title d'), max_length=255)
+
 
 class TestModelMultitableD(TestModelMultitableB):
     titled = models.CharField(ugettext_lazy('title d'), max_length=255)
@@ -755,6 +755,7 @@ class TestModelMultitableD(TestModelMultitableB):
 
 class TestModelAbstractA(models.Model):
     titlea = models.CharField(ugettext_lazy('title a'), max_length=255)
+
     class Meta:
         abstract = True
 

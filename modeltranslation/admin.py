@@ -4,7 +4,7 @@ from copy import copy
 from django.contrib import admin
 from django.contrib.contenttypes import generic
 
-from modeltranslation.settings import *
+from modeltranslation import settings
 from modeltranslation.translator import translator
 from modeltranslation.utils import get_translation_fields, build_localized_fieldname
 
@@ -37,7 +37,7 @@ class TranslationAdminBase(object):
             css_classes = field.widget.attrs.get('class', '').split(' ')
             css_classes.append('modeltranslation')
 
-            if db_field.language == DEFAULT_LANGUAGE:
+            if db_field.language == settings.DEFAULT_LANGUAGE:
                 # Add another css class to identify a default modeltranslation
                 # widget.
                 css_classes.append('modeltranslation-default')
@@ -144,7 +144,7 @@ class TranslationAdmin(admin.ModelAdmin, TranslationAdminBase):
         # See issue 47 for details.
         trans_opts = translator.get_options_for_model(self.model)
         for k, v in trans_opts.localized_fieldnames.items():
-            default_lang_fieldname = build_localized_fieldname(k, DEFAULT_LANGUAGE)
+            default_lang_fieldname = build_localized_fieldname(k, settings.DEFAULT_LANGUAGE)
             default_lang_fieldvalue = getattr(obj, default_lang_fieldname, "")
             setattr(obj, k, default_lang_fieldvalue)
         super(TranslationAdmin, self).save_model(request, obj, form, change)

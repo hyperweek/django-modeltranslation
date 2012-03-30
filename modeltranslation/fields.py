@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
-import sys
-from warnings import warn
-
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.fields import Field, CharField, TextField
 
-from modeltranslation.settings import *
+from modeltranslation import settings
 from modeltranslation.utils import (get_language,
                                     build_localized_fieldname,
                                     build_localized_verbose_name)
@@ -29,7 +25,7 @@ def create_translation_field(model, field_name, lang):
     cls_name = field.__class__.__name__
     # No subclass required for text-like fields
     if not (isinstance(field, (CharField, TextField)) or\
-            cls_name in CUSTOM_FIELDS):
+            cls_name in settings.CUSTOM_FIELDS):
         raise ImproperlyConfigured('%s is not supported by '
                                    'modeltranslation.' % cls_name)
     return TranslationField(translated_field=field, language=lang)
@@ -82,7 +78,7 @@ class TranslationField(Field):
 
     def pre_save(self, model_instance, add):
         val = super(TranslationField, self).pre_save(model_instance, add)
-        if DEFAULT_LANGUAGE == self.language and not add:
+        if settings.DEFAULT_LANGUAGE == self.language and not add:
             # Rule is: 3. Assigning a value to a translation field of the
             # default language also updates the original field
             model_instance.__dict__[self.translated_field.attname] = val
