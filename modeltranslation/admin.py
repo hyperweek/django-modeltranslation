@@ -20,8 +20,6 @@ class TranslationAdminBase(object):
 
         # Hide the original field by making it non-editable.
         if db_field.name in trans_opts.fields:
-            db_field.editable = False
-
             if field.required:
                 field.required = False
                 field.blank = True
