@@ -94,6 +94,7 @@ def delete_cache_fields(model):
     except AttributeError:
         pass
 
+
 class Translator(object):
     """
     A Translator object encapsulates an instance of a translator. Models are
