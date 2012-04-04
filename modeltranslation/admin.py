@@ -148,7 +148,7 @@ class TranslationAdmin(admin.ModelAdmin, TranslationAdminBase):
         for k, v in trans_opts.localized_fieldnames.items():
             default_lang_fieldname = build_localized_fieldname(k, settings.DEFAULT_LANGUAGE)
             default_lang_fieldvalue = getattr(obj, default_lang_fieldname, "")
-            setattr(obj, k, default_lang_fieldvalue)
+            obj.__dict__[k] = default_lang_fieldvalue
         super(TranslationAdmin, self).save_model(request, obj, form, change)
 
     def formfield_for_dbfield(self, db_field, **kwargs):
