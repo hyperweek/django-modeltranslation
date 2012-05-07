@@ -120,7 +120,7 @@ class Translator(object):
                 # the created class appears to "live" in the wrong place,
                 # which causes issues later on.
                 options['__module__'] = __name__
-                translation_opts = type("%sAdmin" % model.__name__,
+                translation_opts = type("%sTranslationOptions" % model.__name__,
                                         (translation_opts,), options)
 
             # Validate (which might be a no-op)
