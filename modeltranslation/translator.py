@@ -63,22 +63,6 @@ def add_localized_fields(model):
     return localized_fields
 
 
-#def translated_model_initialized(field_names, instance, **kwargs):
-    #print "translated_model_initialized instance:", \
-          #instance, ", field:", field_names
-    #for field_name in field_names:
-        #initial_val = getattr(instance, field_name)
-        #print "  field: %s, initialval: %s" % (field_name, initial_val)
-        #setattr(instance.__class__, field_name,
-                #TranslationFieldDescriptor(field_name, initial_val))
-
-
-#def translated_model_initializing(sender, args, kwargs, **signal_kwargs):
-    #print "translated_model_initializing", sender, args, kwargs
-    #trans_opts = translator.get_options_for_model(sender)
-    #for field_name in trans_opts.fields:
-        #setattr(sender, field_name, TranslationFieldDescriptor(field_name))
-
 def delete_cache_fields(model):
     opts = model._meta
     try:
@@ -145,11 +129,6 @@ class Translator(object):
             # Store the translation class associated to the model
             self._registry[model] = translation_opts
 
-            # Get the content type of the original model and store it on the
-            # translation options for faster lookup later on.
-            #translation_opts.model_ct = \
-                #ContentType.objects.get_for_model(model)
-
             # Add the localized fields to the model and store the names of
             # these fields in the model's translation options for faster lookup
             # later on.
@@ -184,9 +163,6 @@ class Translator(object):
                 field_fallback_value = model_fallback_values
             setattr(model, field_name, TranslationFieldDescriptor(field_name,\
                     fallback_value=field_fallback_value))
-
-        #signals.pre_init.connect(translated_model_initializing, sender=model,
-                                 #weak=False)
 
     def unregister(self, model_or_iterable):
         """
