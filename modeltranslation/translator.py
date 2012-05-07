@@ -53,7 +53,7 @@ def add_localized_fields(model):
             if hasattr(model, localized_field_name):
                 raise ValueError("Error adding translation field. Model '%s' "
                                  "already contains a field named '%s'." %\
-                                 (instance.__class__.__name__,
+                                 (model.__class__.__name__,
                                   localized_field_name))
             # This approach implements the translation fields as full valid
             # django model fields and therefore adds them via add_to_class
