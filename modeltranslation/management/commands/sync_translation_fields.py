@@ -15,8 +15,8 @@ from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
 from django.db import connection, transaction
 
-from modeltranslation.utils import build_localized_fieldname
-from modeltranslation.translator import translator
+from ...utils import build_localized_fieldname
+from ...translator import translator
 
 
 def ask_for_confirmation(sql_sentences, model_full_name):

@@ -17,13 +17,17 @@ setup(name='django-modeltranslation',
       maintainer='Dirk Eschler',
       maintainer_email='d.eschler@nmy.de',
       url='http://code.google.com/p/django-modeltranslation/',
-      packages=['modeltranslation', 'modeltranslation.management',
-                'modeltranslation.management.commands'],
+      packages=[
+        'modeltranslation',
+        'modeltranslation.management',
+        'modeltranslation.management.commands'
+      ],
       include_package_data=True,
       zip_safe=False,
-      requires=['django(>=1.0)'],
       download_url='http://django-modeltranslation.googlecode.com/files/django-modeltranslation-0.3.2.tar.gz',
-      classifiers=['Framework :: Django',
-                   'Intended Audience :: Developers',
-                   'License :: OSI Approved :: BSD License'],
+      classifiers=[
+        'Framework :: Django',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
+      ],
       license='New BSD')

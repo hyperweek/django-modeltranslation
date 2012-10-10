@@ -12,8 +12,11 @@ from modeltranslation import translator
 
 # TODO: Tests for TranslationAdmin, RelatedTranslationField and subclasses
 
-settings.LANGUAGES = (('de', 'Deutsch'),
-                      ('en', 'English'))
+settings.LANGUAGES = (
+    ('de', 'Deutsch'),
+    ('en', 'English')
+)
+settings.MODELTRANSLATION_CUSTOM_FIELDS = ('BooleanField',)
 
 
 class RelatedModel(models.Model):
@@ -25,7 +28,7 @@ class TestModel(models.Model):
     text = models.TextField(blank=True, null=True)
     url = models.URLField(verify_exists=False, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-    xml = models.XMLField(blank=True, null=True)
+    xml = models.TextField(blank=True, null=True)
 
 
 class TestTranslationOptions(translator.TranslationOptions):
@@ -40,7 +43,7 @@ class TestModelWithFallback(models.Model):
     text = models.TextField(blank=True, null=True)
     url = models.URLField(verify_exists=False, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-    xml = models.XMLField(blank=True, null=True)
+    xml = models.TextField(blank=True, null=True)
 
 
 class TestTranslationOptionsWithFallback(translator.TranslationOptions):
@@ -56,7 +59,7 @@ class TestModelWithFallback2(models.Model):
     text = models.TextField(blank=True, null=True)
     url = models.URLField(verify_exists=False, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
-    xml = models.XMLField(blank=True, null=True)
+    xml = models.TextField(blank=True, null=True)
 
 
 class TestTranslationOptionsWithFallback2(translator.TranslationOptions):

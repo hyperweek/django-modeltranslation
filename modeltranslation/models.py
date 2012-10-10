@@ -1,0 +1,2 @@
+from .loading import handle_translation_registrations
+handle_translation_registrations()
