@@ -1,5 +1,5 @@
 # following PEP 386
-VERSION = (0, 3, 2, "final", 0)
+VERSION = (0, 3, 4, "beta", 1)
 
 
 def get_version():

@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
-from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models.fields import Field, CharField, TextField
 
-from .utils import (get_language, build_localized_fieldname,
-                    build_localized_verbose_name)
-
-CUSTOM_FIELDS = getattr(settings, 'MODELTRANSLATION_CUSTOM_FIELDS', [])
+from modeltranslation import settings
+from modeltranslation.utils import (get_language,
+                                    build_localized_fieldname,
+                                    build_localized_verbose_name)
 
 
 def create_translation_field(model, field_name, lang):
@@ -25,8 +24,8 @@ def create_translation_field(model, field_name, lang):
     field = model._meta.get_field(field_name)
     cls_name = field.__class__.__name__
     # No subclass required for text-like fields
-    if not (isinstance(field, (CharField, TextField)) or\
-            cls_name in CUSTOM_FIELDS):
+    if not (isinstance(field, (CharField, TextField)) or
+            cls_name in settings.CUSTOM_FIELDS):
         raise ImproperlyConfigured('%s is not supported by '
                                    'modeltranslation.' % cls_name)
     return TranslationField(translated_field=field, language=lang)
@@ -57,7 +56,9 @@ class TranslationField(Field):
         self._post_init(translated_field, language)
 
     def _post_init(self, translated_field, language):
-        """Common init for subclasses of TranslationField."""
+        """
+        Common init for subclasses of TranslationField.
+        """
         # Store the originally wrapped field for later
         self.translated_field = translated_field
         self.language = language
@@ -74,12 +75,12 @@ class TranslationField(Field):
 
         # Copy the verbose name and append a language suffix
         # (will show up e.g. in the admin).
-        self.verbose_name =\
-        build_localized_verbose_name(translated_field.verbose_name, language)
+        self.verbose_name = build_localized_verbose_name(
+            translated_field.verbose_name, language)
 
     def pre_save(self, model_instance, add):
         val = super(TranslationField, self).pre_save(model_instance, add)
-        if settings.LANGUAGE_CODE == self.language and not add:
+        if settings.DEFAULT_LANGUAGE == self.language and not add:
             # Rule is: 3. Assigning a value to a translation field of the
             # default language also updates the original field
             model_instance.__dict__[self.translated_field.attname] = val
@@ -100,7 +101,9 @@ class TranslationField(Field):
         return self.translated_field.get_internal_type()
 
     def south_field_triple(self):
-        """Returns a suitable description of this field for South."""
+        """
+        Returns a suitable description of this field for South.
+        """
         # We'll just introspect the _actual_ field.
         from south.modelsinspector import introspector
         field_class = '%s.%s' % (self.translated_field.__class__.__module__,
@@ -110,7 +113,9 @@ class TranslationField(Field):
         return (field_class, args, kwargs)
 
     def formfield(self, *args, **kwargs):
-        """Preserves the widget of the translated field."""
+        """
+        Preserves the widget of the translated field.
+        """
         trans_formfield = self.translated_field.formfield(*args, **kwargs)
         defaults = {'widget': type(trans_formfield.widget)}
         defaults.update(kwargs)
@@ -118,8 +123,10 @@ class TranslationField(Field):
 
 
 class TranslationFieldDescriptor(object):
-    """A descriptor used for the original translated field."""
-    def __init__(self, name, initial_val="", fallback_value=None):
+    """
+    A descriptor used for the original translated field.
+    """
+    def __init__(self, name, initial_val='', fallback_value=None):
         """
         The ``name`` is the name of the field (which is not available in the
         descriptor by default - this is Python behaviour).
@@ -141,8 +148,8 @@ class TranslationFieldDescriptor(object):
         if not instance:
             raise ValueError(u"Translation field '%s' can only be accessed "
                               "via an instance not via a class." % self.name)
-        loc_field_name = build_localized_fieldname(self.name,
-                                                   get_language())
+        loc_field_name = build_localized_fieldname(
+            self.name, get_language())
         if hasattr(instance, loc_field_name):
             if getattr(instance, loc_field_name):
                 return getattr(instance, loc_field_name)

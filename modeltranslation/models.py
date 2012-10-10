@@ -1,2 +1,2 @@
-from .loading import handle_translation_registrations
+from modeltranslation.loading import handle_translation_registrations
 handle_translation_registrations()
