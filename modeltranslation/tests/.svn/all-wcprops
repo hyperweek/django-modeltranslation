@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/svn/!svn/ver/154/trunk/modeltranslation/tests
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/153/trunk/modeltranslation/tests/__init__.py
+END
+settings.py
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/154/trunk/modeltranslation/tests/settings.py
+END
+urls.py
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/!svn/ver/132/trunk/modeltranslation/tests/urls.py
+END
