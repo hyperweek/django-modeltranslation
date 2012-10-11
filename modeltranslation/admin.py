@@ -208,6 +208,7 @@ class TranslationAdmin(TranslationBaseModelAdmin, admin.ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         kwargs = self._do_get_form_or_formset(**kwargs)
+        kwargs['exclude'] += tuple(self.get_readonly_fields(request, obj))
         return super(TranslationAdmin, self).get_form(request, obj, **kwargs)
 
     def get_fieldsets(self, request, obj=None):
