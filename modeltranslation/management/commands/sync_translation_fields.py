@@ -59,7 +59,8 @@ class Command(BaseCommand):
         """
         self.cursor = connection.cursor()
         self.introspection = connection.introspection
-        interactive = options.get('interactive', True)
+        self.verbosity = int(options.get('verbosity', 1))
+        self.interactive = options.get('interactive', True)
 
         all_models = get_models()
         found_missing_fields = False
@@ -81,17 +82,19 @@ class Command(BaseCommand):
                         self.get_missing_languages(field_name, db_table))
                     if missing_langs:
                         found_missing_fields = True
-                        print_missing_langs(
-                            missing_langs, field_name, model_full_name)
+                        if self.verbosity:
+                            print_missing_langs(
+                                missing_langs, field_name, model_full_name)
                         sql_sentences = self.get_sync_sql(
                             field_name, missing_langs, model)
-                        execute_sql = not interactive or ask_for_confirmation(
-                            sql_sentences, model_full_name)
-                        if execute_sql:
-                            print 'Executing SQL...',
+                        if (not self.interactive or
+                            ask_for_confirmation(sql_sentences, model_full_name)):
+                            if self.verbosity:
+                                print 'Executing SQL...',
                             for sentence in sql_sentences:
                                 self.cursor.execute(sentence)
-                            print 'Done'
+                            if self.verbosity:
+                                print 'Done'
                         else:
                             print 'SQL not executed'
             except NotRegistered:
@@ -99,7 +102,7 @@ class Command(BaseCommand):
 
         transaction.commit_unless_managed()
 
-        if not found_missing_fields:
+        if not found_missing_fields and self.verbosity:
             print 'No new translatable fields detected'
 
     def get_table_fields(self, db_table):
