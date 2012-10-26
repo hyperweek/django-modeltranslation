@@ -49,7 +49,7 @@ class Command(BaseCommand):
             'sync database structure')
     option_list = BaseCommand.option_list + (
         make_option('--noinput', action='store_false', dest='interactive', default=True,
-            help='If provided, no prompts will be issued to the user and the data will be wiped out.'
+            help='If provided, no prompts will be issued to the user and the database will be updated.'
         ),
     )
 
