@@ -9,6 +9,8 @@ You will need to execute this command in two cases:
 
 Credits: Heavily inspired by django-transmeta's sync_transmeta_db command.
 """
+from optparse import make_option
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.core.management.color import no_style
@@ -45,6 +47,11 @@ def print_missing_langs(missing_langs, field_name, model_name):
 class Command(BaseCommand):
     help = ('Detect new translatable fields or new available languages and '
             'sync database structure')
+    option_list = BaseCommand.option_list + (
+        make_option('--noinput', action='store_false', dest='interactive', default=True,
+            help='If provided, no prompts will be issued to the user and the data will be wiped out.'
+        ),
+    )
 
     def handle(self, *args, **options):
         """
@@ -52,6 +59,7 @@ class Command(BaseCommand):
         """
         self.cursor = connection.cursor()
         self.introspection = connection.introspection
+        interactive = options.get('interactive', True)
 
         all_models = get_models()
         found_missing_fields = False
@@ -77,7 +85,7 @@ class Command(BaseCommand):
                             missing_langs, field_name, model_full_name)
                         sql_sentences = self.get_sync_sql(
                             field_name, missing_langs, model)
-                        execute_sql = ask_for_confirmation(
+                        execute_sql = not interactive or ask_for_confirmation(
                             sql_sentences, model_full_name)
                         if execute_sql:
                             print 'Executing SQL...',
